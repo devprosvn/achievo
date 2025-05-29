@@ -437,14 +437,24 @@ def create_app(config_name='default'):
                 if not value:
                     return None
                 try:
-                    # Try hex first (for Nami and other wallets)
-                    return bytes.fromhex(value)
-                except ValueError:
-                    try:
-                        # Try base64 (for Lace and similar wallets)
-                        import base64
+                    # Try base64 first (for Lace and modern wallets)
+                    import base64
+                    # Check if it looks like base64 (contains +, /, = or length divisible by 4)
+                    if any(char in value for char in ['+', '/', '=']) or len(value) % 4 == 0:
                         return base64.b64decode(value)
+                    else:
+                        # Try hex (for Nami and other wallets)
+                        return bytes.fromhex(value)
+                except Exception:
+                    try:
+                        # Fallback: try the other format
+                        if any(char in value for char in ['+', '/', '=']):
+                            return bytes.fromhex(value)
+                        else:
+                            import base64
+                            return base64.b64decode(value)
                     except Exception:
+                        current_app.logger.error(f"Failed to decode signature data: {value[:20]}...")
                         return None
 
             # Decode signature and key
@@ -453,6 +463,11 @@ def create_app(config_name='default'):
 
             if not decoded_signature or not decoded_key:
                 current_app.logger.warning(f"Failed to decode signature/key for wallet {wallet_name}")
+                current_app.logger.debug(f"Signature data: {signature_data[:50] if signature_data else 'None'}...")
+                current_app.logger.debug(f"Key data: {key_data[:50] if key_data else 'None'}...")
+                current_app.logger.debug(f"Message: {message}")
+            else:
+                current_app.logger.info(f"Successfully decoded signature and key for {wallet_name}")
 
             # TODO: Implement proper signature verification using PyCardano
             # For now, we'll validate the basic structure
