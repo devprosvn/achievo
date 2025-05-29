@@ -201,7 +201,6 @@ class IPFSUtils:
             # Default gateway when not in app context
             gateway = 'https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/'
         
-        return f"{gateway}{ipfs_hash}"pfs/'
         return f"{gateway}{ipfs_hash}"
 
 
