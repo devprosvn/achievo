@@ -188,5 +188,3 @@ def configure_logging(app):
         app.logger.addHandler(console_handler)
 
     app.logger.info('Achievo application startup')
-
-`
