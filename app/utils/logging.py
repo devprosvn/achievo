@@ -3,6 +3,7 @@ from loguru import logger
 from enum import Enum
 from typing import Dict, Any, Optional
 from datetime import datetime
+from flask import session, current_app
 from .firebase import firebase_service
 
 

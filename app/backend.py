@@ -65,16 +65,22 @@ def create_app(config_name='default'):
                         session['user_name'] = user.get('full_name', 'User')
                         session['user_type'] = user.get('user_type', 'learner')
                         session['email'] = email
-                
-                AuditLogger.log_action(
-                    LogAction.USER_LOGIN,
-                    {"email": email, "login_method": "email"}
-                )
-                
-                flash('Đăng nhập thành công!', 'success')
-                return redirect(url_for('dashboard'))
+                        
+                        AuditLogger.log_action(
+                            LogAction.USER_LOGIN,
+                            {"email": email, "login_method": "email"}
+                        )
+                        
+                        flash('Đăng nhập thành công!', 'success')
+                        return redirect(url_for('dashboard'))
+                    else:
+                        flash('Email hoặc mật khẩu không đúng', 'error')
+                        
+                except Exception as e:
+                    flash('Lỗi đăng nhập. Vui lòng thử lại.', 'error')
+                    app.logger.error(f"Login error: {e}")
             else:
-                flash('Email hoặc mật khẩu không đúng', 'error')
+                flash('Vui lòng điền đầy đủ thông tin', 'error')
         
         return render_template('login.html')
     
@@ -103,19 +109,23 @@ def create_app(config_name='default'):
                     }
                     
                     user_id = firebase_service.create_user(user_data)
-                
-                AuditLogger.log_action(
-                    LogAction.USER_REGISTER,
-                    {
-                        "user_type": user_type,
-                        "email": email,
-                        "registration_method": "email"
-                    },
-                    user_id=user_id
-                )
-                
-                flash('Đăng ký thành công! Vui lòng đăng nhập.', 'success')
-                return redirect(url_for('login'))
+                    
+                    AuditLogger.log_action(
+                        LogAction.USER_REGISTER,
+                        {
+                            "user_type": user_type,
+                            "email": email,
+                            "registration_method": "email"
+                        },
+                        user_id=user_id
+                    )
+                    
+                    flash('Đăng ký thành công! Vui lòng đăng nhập.', 'success')
+                    return redirect(url_for('login'))
+                    
+                except Exception as e:
+                    flash('Lỗi đăng ký. Vui lòng thử lại.', 'error')
+                    app.logger.error(f"Registration error: {e}")
             else:
                 flash('Vui lòng điền đầy đủ thông tin', 'error')
         
