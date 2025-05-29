@@ -1,0 +1,11 @@
+flask-limiter
+flask-jwt-extended
+flask-cors
+requests
+python-dotenv
+firebase-admin
+cryptography
+pyjwt
+werkzeug
+loguru
+python-dateutil
