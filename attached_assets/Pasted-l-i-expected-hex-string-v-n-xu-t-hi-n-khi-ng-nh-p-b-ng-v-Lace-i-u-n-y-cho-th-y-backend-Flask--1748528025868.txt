@@ -1,0 +1,72 @@
+lỗi "expected hex string" vẫn xuất hiện khi đăng nhập bằng ví Lace. Điều này cho thấy backend Flask của bạn vẫn đang sử dụng bytes.fromhex() để xử lý dữ liệu chữ ký, trong khi ví Lace trả về chuỗi Base64, không phải chuỗi hex.
+
+✅ Cách khắc phục
+1. Thay thế bytes.fromhex() bằng base64.b64decode()
+Trong hàm verify_signature của bạn, hãy thay đoạn mã:
+
+python
+Sao chép
+Chỉnh sửa
+signature = bytes.fromhex(data["signature"])
+key = bytes.fromhex(data["key"])
+bằng:
+Tutorial Reference
++5
+Ethereum Stack Exchange
++5
+Real Python
++5
+
+python
+Sao chép
+Chỉnh sửa
+import base64
+
+signature = base64.b64decode(data["signature"])
+key = base64.b64decode(data["key"])
+Điều này đảm bảo rằng dữ liệu chữ ký và khóa công khai được giải mã đúng cách từ định dạng Base64 mà ví Lace sử dụng.
+
+2. Xử lý trường hợp thiếu padding trong Base64
+Nếu chuỗi Base64 thiếu padding (dấu = ở cuối), bạn có thể thêm padding trước khi giải mã:
+Tutorial Reference
+
+python
+Sao chép
+Chỉnh sửa
+def add_padding(base64_str):
+    return base64_str + '=' * (-len(base64_str) % 4)
+
+signature = base64.b64decode(add_padding(data["signature"]))
+key = base64.b64decode(add_padding(data["key"]))
+Điều này giúp tránh lỗi Incorrect padding khi giải mã chuỗi Base64 không đầy đủ.
+Tutorial Reference
++1
+Reddit
++1
+
+3. Kiểm tra dữ liệu đầu vào
+Trước khi giải mã, hãy in ra dữ liệu nhận được để đảm bảo rằng chuỗi Base64 hợp lệ:
+
+python
+Sao chép
+Chỉnh sửa
+print(f"Received signature: {data['signature']}")
+print(f"Received key: {data['key']}")
+Điều này giúp bạn xác định xem dữ liệu có bị thay đổi hoặc không hợp lệ trong quá trình truyền từ frontend đến backend hay không.
+
+🔍 Kiểm tra frontend
+Đảm bảo rằng frontend của bạn đang gửi đúng dữ liệu từ ví Lace đến backend. Khi sử dụng wallet.signData(), ví Lace trả về một đối tượng chứa signature và key ở định dạng Base64:
+
+javascript
+Sao chép
+Chỉnh sửa
+const signed = await wallet.signData(address, nonce);
+console.log("Signed data:", signed);
+Hãy kiểm tra console để xác nhận rằng signed.signature và signed.key là chuỗi Base64 hợp lệ.
+
+🧪 Kiểm tra toàn diện
+Cập nhật backend: Đảm bảo rằng bạn đã thay thế hoàn toàn bytes.fromhex() bằng base64.b64decode() trong tất cả các trường hợp xử lý signature và key.
+
+Kiểm tra frontend: Xác nhận rằng dữ liệu gửi từ frontend là chuỗi Base64 hợp lệ và không bị thay đổi trong quá trình truyền.
+
+Kiểm tra dữ liệu: In ra dữ liệu nhận được ở backend để xác minh tính hợp lệ trước khi giải mã.
