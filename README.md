@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ACHIEVO INFORMATION (PYTHON STACK VERSION)
 ==========================================
 
@@ -367,3 +368,7 @@ achievo/
 *   **Mọi tích hợp Koios, IPFS/Pinata, Firestore hoặc Postgres đều qua thư viện Python.**
     
 *   **Mọi logging, alert, monitoring dùng hệ sinh thái Python (Sentry, Loguru, v.v.).**
+=======
+# achievo
+Achievo - Web3 E-learning platform, developed by DevPros
+>>>>>>> f56eff955c0e791197c92eff0b76f43e8d8a011f
