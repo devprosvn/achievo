@@ -28,10 +28,10 @@ def create_app(config_name='default'):
     
     # Initialize rate limiting
     limiter = Limiter(
-        app,
         key_func=get_remote_address,
         storage_uri=app.config['RATE_LIMIT_STORAGE_URL']
     )
+    limiter.init_app(app)
     
     # Configure logging
     configure_logging(app)
