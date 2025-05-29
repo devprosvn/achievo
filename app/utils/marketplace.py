@@ -14,7 +14,14 @@ class MarketplaceService:
     
     def __init__(self):
         self.firebase = firebase_service
-        self.cardano = get_koios_client()
+        self._cardano = None
+    
+    @property
+    def cardano(self):
+        """Lazy load cardano client"""
+        if self._cardano is None:
+            self._cardano = get_koios_client()
+        return self._cardano
     
     def create_course_listing(self, course_data: Dict, creator_id: str) -> str:
         """Tạo listing khóa học trên marketplace"""
@@ -158,7 +165,14 @@ class RewardService:
     
     def __init__(self):
         self.firebase = firebase_service
-        self.cardano = get_koios_client()
+        self._cardano = None
+    
+    @property
+    def cardano(self):
+        """Lazy load cardano client"""
+        if self._cardano is None:
+            self._cardano = get_koios_client()
+        return self._cardano
     
     def check_milestone_rewards(self, user_id: str) -> List[Dict]:
         """Kiểm tra và tự động cấp phần thưởng milestone"""

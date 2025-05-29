@@ -12,7 +12,15 @@ class KoiosClient:
     """Client cho Koios API"""
     
     def __init__(self, base_url: str = None):
-        self.base_url = base_url or current_app.config['KOIOS_API_URL']
+        if base_url:
+            self.base_url = base_url
+        else:
+            try:
+                self.base_url = current_app.config['KOIOS_API_URL']
+            except RuntimeError:
+                # Default URL when not in app context
+                self.base_url = 'https://api.koios.rest/api/v1'
+        
         self.session = requests.Session()
         self.session.headers.update({
             'Content-Type': 'application/json',
