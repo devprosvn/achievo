@@ -21,31 +21,31 @@ services:
       - key: FIREBASE_AUTH_DOMAIN
         value: achievo-devpros.firebaseapp.com
       - key: FIREBASE_PRIVATE_KEY_ID
-        value: your_private_key_id_here
+        value: 752410e7d8df9df5656177a438d45f52cd9f9a17
       - key: FIREBASE_PRIVATE_KEY
-        value: your_private_key_here
+        value: -----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCwxdsF0F9Jnes/\nTf23ScSFjsksy6IFOzPI/aqgRqXdlNyqm33sJcWqIfy2lxFh23S2AKBEXRrxIHhV\ntBSGbeHpdrAE59+3+KtoGL78TsT5iFvqdqrjb+imXzEfzlJlp1X/obof0yMd0AxN\n0vTOKbDrViYtSFqUCLl3uUz59rLyK5BNgfOiqYpTbla/oZogYBODQK9dbK2zdOe4\n/88G71rYExozjT3GthMMUkHm7qIMuqFRGUCR/zQYjB9mw5tFy7TE8A+Ob988yofh\n86tMAUq73cpQ9xy7uCRGe2O204G2IAg2Qriy48Zk4NjdyVbiokC+heAvH9bz8nDP\nMZLWoiYvAgMBAAECggEAGuiDRodJefNH9ALzNAtOluX9SYxVxWYVo+q5JlyasvgN\n/wpcSK4XQKabyU+FndfCFFJUExP5HetLZgBbf3sKgHdIo/aH34FC1j2uFMoIwdM3\n6qDVsnk+eNTUrXrCoCawuJDtvBpvpgIdXVtXWGqQO8KJXSs+XnpVgRv707Dx3Fr0\ndAkA3Ygw02nWdX+6yYF00sfOoDofIXiWkfoZXZKypMki9yqyYm2kOzaLAuWu9XRz\nNlXJjqveI8X5nEIz/mj+BFVqVeXh9ew74v2VYphmDw+F9GxDHs8VK6NVItwd+GH1\nUPdMQrfhVmcnt6iBzxlOyh3v+xR0gUvDi+zcHc+kAQKBgQDdOHLtqP/ZR89NyQZ9\ndo7aIFj4KT2vimwuVIELZMamBz7iawy8XTtrm3H53wT4Nfqy4XuVIUfFahHxmmsu\neqB/M7Cw13haj7HlIyUg+dn/Qfw0CAVPluY7X+rDHFY2dY6m/2xhkTxPQisg4b9C\npbLtdOxpXpMBF7PMppMxhWFabwKBgQDMkIE+4QApdbBv1PwAtjsytVBg+uNBnAFV\nJNZWoaTnIC4kelhvAmvoSp7WrCELekfRaxLlA1yRy7qArd0+LSu2JjOz0384ajeW\npykQk+dumFOZ4QJxGAkICQqNJaVOAsbQnPRiXu4v8W1McQzqXlFN3KxMFnDtHbnl\n3D1Gj5DQQQKBgQCoowqBf24iDarLKi5nYAR/5V7NNmsOsR/MpaCFtfn0wNtAMMjR\nouTUH/hfuZIJQOTujhLuWSNkK3qoScXg9Zv5u8a62Fan+phrC0KXg7+Z5YxDgcXC\nqU6y/mhw+d4Cv9TSGy5cpiFqbg+AjnaFcNkYSSSbInw/vfjTTjww6POQwwKBgHf4\n+BQMma+3Gjc8Tl+MgMOImw+FlOrRt+ZbqGk+fBwhP26dYmgYn3io6uc0JF065gvo\nJDiz9AJ93W/CiFMC4vP9C62XiLFpehidCPR0CfNO2xkQYgI5+nH/+3Q0c/KApmGK\n67kVu9PaYCPI2a5KipyDo3ksYCZwnKo2tKlBYckBAoGAeToxfK+48cIaFZwwZdQr\nz6tZQdqoqiUfBhwc2krM/A51fm0lYo80SbIbE+dYiQgIaPayxbdSQHarekKOJ4ln\nL6MPJmoAgRppigotPEETTnOgDQBaOvc4jCgWvtHjCaacsWa4tpLiwhdEtfolMj4L\n2qFDyq7DBskSdfJFxPhTzvY=\n-----END PRIVATE KEY-----\n
       - key: FIREBASE_CLIENT_EMAIL
-        value: your_client_email_here
+        value: firebase-adminsdk-fbsvc@achievo-devpros.iam.gserviceaccount.com
       - key: FIREBASE_CLIENT_ID
-        value: your_client_id_here
+        value: 111619071136633128384
       - key: FIREBASE_CLIENT_X509_CERT_URL
-        value: your_cert_url_here
+        value: https://www.googleapis.com/oauth2/v1/certs
       - key: KOIOS_API_URL
         value: https://preprod.koios.rest/api/v1
-      - key: KOIOS_API_TOKEN
+      - key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZGRyIjoic3Rha2UxdTgwNTlqcGY3enQyOXQ2enI0ZzR3N2xtcnBkMGh4aDI3dGVkZXdncDN0dGQ0cWNlZ2s4NDYiLCJleHAiOjE3Nzk2MjcxNjksInRpZXIiOjEsInByb2pJRCI6ImFjaGlldm8ifQ.IBuk_kSH7bLaB79428IsmjuzLmkF2ZC1CxavvKhiJbI
         value: 
       - key: CARDANO_NETWORK
         value: preprod
       - key: PINATA_API_KEY
-        value: 
+        value: 65362684cb9d180aa6e8
       - key: PINATA_SECRET_KEY
-        value: 
+        value: 398f210641fa0062326797af6f8460eee680c8c7f38a67e2828b4edc19790359
       - key: PINATA_JWT
-        value: 
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiI1MDVhMDdlOC1hOGNlLTRmMjMtOWRhYS00YjRjMjljMGNlMmYiLCJlbWFpbCI6IndvcmsuZGV2cHJvc0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJGUkExIn0seyJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MSwiaWQiOiJOWUMxIn1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNjUzNjI2ODRjYjlkMTgwYWE2ZTgiLCJzY29wZWRLZXlTZWNyZXQiOiIzOThmMjEwNjQxZmEwMDYyMzI2Nzk3YWY2Zjg0NjBlZWU2ODBjOGM3ZjM4YTY3ZTI4MjhiNGVkYzE5NzkwMzU5IiwiZXhwIjoxNzc5NzkzODk3fQ.S8CmryDjQUdr0ufqWIJpldbiCGP_CEeIWt4lCYbqM98
       - key: IPFS_GATEWAY
         value: https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/
       - key: JWT_SECRET_KEY
-        value: 
+        value: 0f08da775a37ca6153020efdc7c5d3fafdafd0410e34736d0be5e2ff4e2368d0764ef7277160a8a769387d37673559204acc2feaecfa4df6ee960d47b65ac08bab5d53cf9563cf66910e1b4f158494db0e4eac2dae0fbaf07187a4a69c2481e81c68f321646fbfe6574be9dbe62071de11a739222f7a8eca6569531b614a24213dcd422c97108bcbfe51a936d9b9bebc6cd3c22ee6452b79f9f190acc5c5b8571ed336aeb0c5f5e0f6fa05e791abf721695cb5d34b2281f3c95300241085a487ea4ec568af63650be1f45773b9d9b177040035839732c22f688734194f0073424f8dc58eb0bd51d10887b6e38eb496f0d5b8da03bd20f1c5bfba28fe31e6adec
       - key: JWT_ACCESS_TOKEN_EXPIRES
         value: 3600
       - key: RATE_LIMIT_STORAGE_URL
