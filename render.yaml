@@ -15,37 +15,37 @@ services:
       - key: FLASK_DEBUG
         value: False
       - key: SECRET_KEY
-        fromGroup: secrets
+        value: 9cf594e8adfc1960e62829609c486bf966f4600dce6d9b9b7a737b940495a1c4
       - key: FIREBASE_PROJECT_ID
         value: achievo-devpros
       - key: FIREBASE_AUTH_DOMAIN
         value: achievo-devpros.firebaseapp.com
       - key: FIREBASE_PRIVATE_KEY_ID
-        fromGroup: secrets
+        value: your_private_key_id_here
       - key: FIREBASE_PRIVATE_KEY
-        fromGroup: secrets
+        value: your_private_key_here
       - key: FIREBASE_CLIENT_EMAIL
-        fromGroup: secrets
+        value: your_client_email_here
       - key: FIREBASE_CLIENT_ID
-        fromGroup: secrets
+        value: your_client_id_here
       - key: FIREBASE_CLIENT_X509_CERT_URL
-        fromGroup: secrets
+        value: your_cert_url_here
       - key: KOIOS_API_URL
         value: https://preprod.koios.rest/api/v1
       - key: KOIOS_API_TOKEN
-        fromGroup: secrets
+        value: your_koios_token_here
       - key: CARDANO_NETWORK
         value: preprod
       - key: PINATA_API_KEY
-        fromGroup: secrets
+        value: your_pinata_api_key_here
       - key: PINATA_SECRET_KEY
-        fromGroup: secrets
+        value: your_pinata_secret_key_here
       - key: PINATA_JWT
-        fromGroup: secrets
+        value: your_pinata_jwt_here
       - key: IPFS_GATEWAY
         value: https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/
       - key: JWT_SECRET_KEY
-        fromGroup: secrets
+        value: 9cf594e8adfc1960e62829609c486bf966f4600dce6d9b9b7a737b940495a1c4
       - key: JWT_ACCESS_TOKEN_EXPIRES
         value: 3600
       - key: RATE_LIMIT_STORAGE_URL
