@@ -40,7 +40,7 @@
 // CIP-30 compliant Cardano Wallet Connector
 class CardanoWalletConnector {
     constructor() {
-        this.supportedWallets = ['nami', 'eternl', 'flint', 'typhoncip30', 'nufi', 'gero'];
+        this.supportedWallets = ['nami', 'eternl', 'flint', 'lace', 'typhoncip30', 'nufi', 'gero'];
         this.connectedWallet = null;
         this.api = null;
     }
@@ -66,6 +66,7 @@ class CardanoWalletConnector {
             'nami': 'Nami',
             'eternl': 'Eternl',
             'flint': 'Flint',
+            'lace': 'Lace',
             'typhoncip30': 'Typhon',
             'nufi': 'NuFi',
             'gero': 'GeroWallet'
@@ -87,8 +88,16 @@ class CardanoWalletConnector {
                 throw new Error(`Wallet ${walletName} does not support CIP-30`);
             }
 
-            // Enable wallet
-            this.api = await wallet.enable();
+            // Enable wallet - some wallets need different parameters
+            let enableResult;
+            if (walletName === 'lace') {
+                // Lace might need specific parameters
+                enableResult = await wallet.enable();
+            } else {
+                enableResult = await wallet.enable();
+            }
+            
+            this.api = enableResult;
             this.connectedWallet = walletName;
 
             // Get wallet info
@@ -157,9 +166,13 @@ const walletConnector = new CardanoWalletConnector();
 function showWalletSelection() {
     const availableWallets = walletConnector.getAvailableWallets();
     
+    // Debug: log available wallets to console
+    console.log('Available wallets:', availableWallets);
+    console.log('window.cardano:', window.cardano);
+    
     if (availableWallets.length === 0) {
-        alert('Không tìm thấy Cardano wallet nào. Vui lòng cài đặt Nami, Eternl, Flint hoặc wallet khác hỗ trợ CIP-30.');
-        window.open('https://namiwallet.io', '_blank');
+        alert('Không tìm thấy Cardano wallet nào. Vui lòng cài đặt Nami, Eternl, Flint, Lace hoặc wallet khác hỗ trợ CIP-30.');
+        window.open('https://www.lace.io/', '_blank');
         return;
     }
 
@@ -260,8 +273,32 @@ function closeWalletModal() {
     }
 }
 
+// Debug function to check available wallets
+function debugWallets() {
+    console.log('=== Wallet Debug Info ===');
+    console.log('window.cardano:', window.cardano);
+    
+    if (window.cardano) {
+        const walletNames = ['nami', 'eternl', 'flint', 'lace', 'typhoncip30', 'nufi', 'gero'];
+        walletNames.forEach(name => {
+            if (window.cardano[name]) {
+                console.log(`✅ ${name}:`, window.cardano[name]);
+                console.log(`   - Has enable():`, typeof window.cardano[name].enable === 'function');
+                console.log(`   - IsEnabled():`, window.cardano[name].isEnabled);
+            } else {
+                console.log(`❌ ${name}: not found`);
+            }
+        });
+    } else {
+        console.log('❌ window.cardano: not found');
+    }
+    console.log('========================');
+}
+
 // Main function called by button
 async function connectCardanoWallet() {
+    // Debug first
+    debugWallets();
     showWalletSelection();
 }
 </script>
