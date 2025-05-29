@@ -296,9 +296,112 @@ function debugWallets() {
 
 // Main function called by button
 async function connectCardanoWallet() {
-    // Debug first
-    debugWallets();
-    showWalletSelection();
-}
+            try {
+                console.log('Attempting to connect wallet...');
+
+                // Kiểm tra xem có ví nào được cài đặt không
+                if (!window.cardano) {
+                    throw new Error('Không tìm thấy ví Cardano nào được cài đặt');
+                }
+
+                let wallet = null;
+                let walletName = '';
+
+                // Thử kết nối với các ví theo thứ tự ưu tiên
+                const wallets = ['nami', 'eternl', 'lace', 'flint'];
+
+                for (const name of wallets) {
+                    if (window.cardano[name]) {
+                        console.log(`Trying to connect to ${name}...`);
+                        try {
+                            wallet = await window.cardano[name].enable();
+                            walletName = name;
+                            console.log(`Connected to ${name} successfully`);
+                            break;
+                        } catch (err) {
+                            console.log(`Failed to connect to ${name}:`, err);
+                            continue;
+                        }
+                    }
+                }
+
+                if (!wallet) {
+                    throw new Error('Không thể kết nối với bất kỳ ví nào');
+                }
+
+                // Lấy địa chỉ ví
+                const addresses = await wallet.getUsedAddresses();
+                if (!addresses || addresses.length === 0) {
+                    const unusedAddresses = await wallet.getUnusedAddresses();
+                    if (!unusedAddresses || unusedAddresses.length === 0) {
+                        throw new Error('Không thể lấy địa chỉ ví');
+                    }
+                    addresses.push(unusedAddresses[0]);
+                }
+
+                const addressHex = addresses[0];
+
+                // Chuyển đổi địa chỉ hex sang bech32
+                const addressBech32 = await wallet.getUsedAddresses().then(addrs => {
+                    if (addrs && addrs.length > 0) {
+                        return window.CardanoWasm ? window.CardanoWasm.Address.from_bytes(
+                            new Uint8Array(Buffer.from(addrs[0], 'hex'))
+                        ).to_bech32() : addrs[0];
+                    }
+                    return addressHex;
+                });
+
+                console.log('Wallet address:', addressBech32);
+                console.log('Wallet type:', walletName);
+
+                // Tạo nonce để ký
+                const nonce = Math.random().toString(36).substring(2, 15);
+                const message = `Đăng nhập vào Achievo với nonce: ${nonce}`;
+
+                console.log('Signing message:', message);
+
+                // Ký tin nhắn - xử lý khác nhau cho từng loại ví
+                let signedData;
+                if (walletName === 'lace') {
+                    // Lace wallet sử dụng định dạng khác
+                    signedData = await wallet.signData(addressBech32, message);
+                } else {
+                    // Các ví khác
+                    signedData = await wallet.signData(addressBech32, Buffer.from(message).toString('hex'));
+                }
+
+                console.log('Signed data:', signedData);
+                console.log('Signature type:', typeof signedData.signature);
+                console.log('Key type:', typeof signedData.key);
+
+                // Gửi dữ liệu đến server
+                const response = await fetch('/login/cardano', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        address: addressBech32,
+                        signature: signedData.signature,
+                        key: signedData.key,
+                        message: message,
+                        walletType: walletName
+                    })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    console.log('Login successful');
+                    window.location.href = result.redirect || '/dashboard';
+                } else {
+                    throw new Error(result.error || 'Đăng nhập thất bại');
+                }
+
+            } catch (error) {
+                console.error('Wallet connection error:', error);
+                alert('Lỗi kết nối ví: ' + error.message);
+            }
+        }
 </script>
 {% endblock %}

@@ -1,7 +1,13 @@
 """Utilities cho tương tác với Cardano blockchain qua Koios API, with API token support."""
 import requests
 import json
-from typing import Dict, List, Optional
+import hashlib
+import os
+import base64
+from typing import Dict, List, Optional, Any
+from datetime import datetime
+from nacl.signing import VerifyKey
+from nacl.exceptions import BadSignatureError
 from flask import current_app
 
 
@@ -147,6 +153,51 @@ class CardanoUtils:
             ]
         }
         return json.dumps(datum)
+
+    @staticmethod
+    def verify_signature(data: Dict) -> bool:
+        """Xác thực chữ ký từ ví Cardano"""
+        try:
+            # Helper function để thêm padding cho Base64 nếu thiếu
+            def add_padding(base64_str):
+                return base64_str + '=' * (-len(base64_str) % 4)
+
+            # Log dữ liệu nhận được để debug
+            print(f"Received signature: {data['signature']}")
+            print(f"Received key: {data['key']}")
+
+            # Kiểm tra xem dữ liệu có phải hex hay Base64
+            try:
+                # Thử hex trước (cho các ví khác)
+                signature = bytes.fromhex(data["signature"])
+                key = bytes.fromhex(data["key"])
+                print("Successfully decoded as hex format")
+            except ValueError:
+                # Nếu không phải hex, thử Base64 (cho Lace wallet)
+                try:
+                    signature = base64.b64decode(add_padding(data["signature"]))
+                    key = base64.b64decode(add_padding(data["key"]))
+                    print("Successfully decoded as Base64 format")
+                except Exception as e:
+                    print(f"Failed to decode as both hex and Base64: {e}")
+                    return False
+
+            message = data["message"].encode('utf-8')
+
+            # Tạo VerifyKey từ public key
+            verify_key = VerifyKey(key)
+
+            # Xác thực chữ ký
+            verify_key.verify(message, signature)
+            print("Signature verification successful")
+            return True
+
+        except (ValueError, BadSignatureError) as e:
+            print(f"Signature verification failed: {e}")
+            return False
+        except Exception as e:
+            print(f"Unexpected error in signature verification: {e}")
+            return False
 
 
 def get_koios_client() -> KoiosClient:
