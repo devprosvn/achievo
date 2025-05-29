@@ -193,10 +193,29 @@ async function connectToWallet(walletName) {
     closeWalletModal();
     
     try {
+        // Get nonce from backend first
+        const nonceResponse = await fetch('/auth/get_nonce', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                wallet_name: walletName
+            })
+        });
+
+        if (!nonceResponse.ok) {
+            throw new Error('Failed to get nonce from server');
+        }
+
+        const nonceData = await nonceResponse.json();
+        const nonce = nonceData.nonce;
+
+        // Connect to wallet
         const walletInfo = await walletConnector.connectWallet(walletName);
         
-        // Create authentication message
-        const authMessage = `Achievo Authentication\nTimestamp: ${Date.now()}\nAddress: ${walletInfo.address}`;
+        // Create authentication message with nonce
+        const authMessage = `Achievo Authentication\nNonce: ${nonce}\nTimestamp: ${Date.now()}\nAddress: ${walletInfo.address}`;
         
         // Sign the message for authentication
         const signature = await walletConnector.signData(walletInfo.address, authMessage);
@@ -211,8 +230,10 @@ async function connectToWallet(walletName) {
                 walletName,
                 address: walletInfo.address,
                 networkId: walletInfo.networkId,
-                signature: signature,
+                signature: signature.signature,
+                key: signature.key,
                 message: authMessage,
+                nonce: nonce,
                 balance: walletInfo.balance
             })
         });
@@ -242,8 +263,6 @@ function closeWalletModal() {
 // Main function called by button
 async function connectCardanoWallet() {
     showWalletSelection();
-}t thất bại');
-    }
 }
 </script>
 {% endblock %}

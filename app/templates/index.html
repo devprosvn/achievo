@@ -1,40 +1,40 @@
 
 {% extends "base.html" %}
 
+{% block title %}Achievo - Nền tảng Chứng chỉ NFT{% endblock %}
+
 {% block content %}
-<div class="hero-section" style="text-align: center; padding: 4rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: -20px -20px 2rem -20px;">
-    <div class="container">
-        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Achievo</h1>
-        <p style="font-size: 1.5rem; margin-bottom: 2rem;">Nền tảng chứng chỉ NFT trên Cardano</p>
-        <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Bắt đầu ngay</a>
+<div class="hero-section">
+    <h1>Achievo</h1>
+    <p>Nền tảng chứng chỉ NFT trên Cardano</p>
+    <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">
+        Bắt đầu ngay
+    </a>
+</div>
+
+<div class="dashboard-grid">
+    <div class="feature-card">
+        <h3>🏆 Chứng chỉ NFT</h3>
+        <p>Phát hành và quản lý chứng chỉ dưới dạng NFT trên blockchain Cardano với tính bảo mật và minh bạch cao.</p>
+    </div>
+    
+    <div class="feature-card">
+        <h3>🏅 Hệ thống phần thưởng</h3>
+        <p>Nhận phần thưởng NFT khi hoàn thành các milestone học tập, tạo động lực học tập bền vững.</p>
+    </div>
+    
+    <div class="feature-card">
+        <h3>🛒 Marketplace</h3>
+        <p>Mua bán khóa học và dịch vụ bằng Cardano token trong một môi trường an toàn và minh bạch.</p>
+    </div>
+    
+    <div class="feature-card">
+        <h3>✅ Xác thực công khai</h3>
+        <p>Xác minh tính hợp lệ của chứng chỉ một cách nhanh chóng và minh bạch thông qua blockchain.</p>
     </div>
 </div>
 
-<div class="features-section">
-    <div class="dashboard-grid">
-        <div class="card">
-            <h3>🎓 Chứng chỉ NFT</h3>
-            <p>Phát hành và quản lý chứng chỉ dưới dạng NFT trên blockchain Cardano với tính bảo mật và minh bạch cao.</p>
-        </div>
-        
-        <div class="card">
-            <h3>🏆 Hệ thống phần thưởng</h3>
-            <p>Nhận phần thưởng NFT tự động khi hoàn thành các milestone học tập, tạo động lực học tập bền vững.</p>
-        </div>
-        
-        <div class="card">
-            <h3>🛒 Marketplace</h3>
-            <p>Mua bán khóa học và dịch vụ giáo dục bằng Cardano token trong một môi trường an toàn và minh bạch.</p>
-        </div>
-        
-        <div class="card">
-            <h3>✅ Xác thực công khai</h3>
-            <p>Xác minh tính hợp lệ của chứng chỉ một cách nhanh chóng và minh bạch thông qua blockchain.</p>
-        </div>
-    </div>
-</div>
-
-<div class="stats-section" style="background: #f8f9fa; padding: 3rem 0; margin: 2rem -20px -20px -20px;">
+<div class="stats-section">
     <div class="container">
         <div class="dashboard-grid">
             <div style="text-align: center;">
@@ -47,8 +47,34 @@
             </div>
             <div style="text-align: center;">
                 <h2 style="color: #e74c3c;">50+</h2>
-                <p>Tổ chức đối tác</p>
+                <p>Tổ chức giáo dục</p>
             </div>
+            <div style="text-align: center;">
+                <h2 style="color: #f39c12;">99.9%</h2>
+                <p>Độ tin cậy</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h2 style="text-align: center; margin-bottom: 2rem; color: #2c3e50;">Tại sao chọn Achievo?</h2>
+    <div class="dashboard-grid">
+        <div>
+            <h4 style="color: #3498db; margin-bottom: 1rem;">🔒 Bảo mật tuyệt đối</h4>
+            <p>Sử dụng công nghệ blockchain Cardano để đảm bảo chứng chỉ không thể bị làm giả hoặc thay đổi.</p>
+        </div>
+        <div>
+            <h4 style="color: #2ecc71; margin-bottom: 1rem;">🌍 Được công nhận toàn cầu</h4>
+            <p>Chứng chỉ NFT có thể được xác thực và công nhận bởi bất kỳ ai, ở bất kỳ đâu trên thế giới.</p>
+        </div>
+        <div>
+            <h4 style="color: #e74c3c; margin-bottom: 1rem;">⚡ Nhanh chóng và hiệu quả</h4>
+            <p>Phát hành và xác thực chứng chỉ trong vài phút thay vì vài ngày như phương pháp truyền thống.</p>
+        </div>
+        <div>
+            <h4 style="color: #f39c12; margin-bottom: 1rem;">💰 Tiết kiệm chi phí</h4>
+            <p>Giảm đáng kể chi phí quản lý và xác thực chứng chỉ so với hệ thống truyền thống.</p>
         </div>
     </div>
 </div>

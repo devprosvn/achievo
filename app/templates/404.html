@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+
+{% block title %}Trang không tìm thấy - Achievo{% endblock %}
+
+{% block content %}
+<div style="text-align: center; padding: 4rem 0;">
+    <div class="card" style="max-width: 600px; margin: 0 auto;">
+        <h1 style="font-size: 6rem; color: #e74c3c; margin-bottom: 1rem;">404</h1>
+        <h2 style="color: #2c3e50; margin-bottom: 1rem;">Trang không tìm thấy</h2>
+        <p style="color: #7f8c8d; margin-bottom: 2rem;">
+            Xin lỗi, trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển.
+        </p>
+        <a href="{{ url_for('index') }}" class="btn btn-primary">
+            Về trang chủ
+        </a>
+    </div>
+</div>
+{% endblock %}
