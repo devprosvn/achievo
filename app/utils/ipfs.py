@@ -14,14 +14,42 @@ class PinataClient:
     """Client cho Pinata IPFS service"""
 
     def __init__(self):
-        self.api_key = current_app.config['PINATA_API_KEY']
-        self.secret_key = current_app.config['PINATA_SECRET_KEY']
         self.base_url = "https://api.pinata.cloud"
+        self._api_key = None
+        self._secret_key = None
+        self._headers = None
 
-        self.headers = {
-            'pinata_api_key': self.api_key,
-            'pinata_secret_api_key': self.secret_key
-        }
+    @property
+    def api_key(self):
+        """Lazy load API key"""
+        if self._api_key is None:
+            try:
+                self._api_key = current_app.config['PINATA_API_KEY']
+            except RuntimeError:
+                # Default when not in app context
+                self._api_key = os.getenv('PINATA_API_KEY', '')
+        return self._api_key
+
+    @property
+    def secret_key(self):
+        """Lazy load secret key"""
+        if self._secret_key is None:
+            try:
+                self._secret_key = current_app.config['PINATA_SECRET_KEY']
+            except RuntimeError:
+                # Default when not in app context
+                self._secret_key = os.getenv('PINATA_SECRET_KEY', '')
+        return self._secret_key
+
+    @property
+    def headers(self):
+        """Lazy load headers"""
+        if self._headers is None:
+            self._headers = {
+                'pinata_api_key': self.api_key,
+                'pinata_secret_api_key': self.secret_key
+            }
+        return self._headers
 
     def pin_json_to_ipfs(self, json_data: Dict, name: str = None) -> Dict:
         """Pin JSON data lên IPFS"""
@@ -72,7 +100,12 @@ class PinataClient:
 
     def get_pinned_data(self, ipfs_hash: str) -> Optional[Dict]:
         """Lấy dữ liệu đã pin từ IPFS hash"""
-        gateway_url = f"{current_app.config['IPFS_GATEWAY']}{ipfs_hash}"
+        try:
+            gateway = current_app.config['IPFS_GATEWAY']
+        except RuntimeError:
+            # Default gateway when not in app context
+            gateway = 'https://gateway.pinata.cloud/ipfs/'
+        gateway_url = f"{gateway}{ipfs_hash}"
 
         try:
             response = requests.get(gateway_url)
@@ -162,7 +195,12 @@ class IPFSUtils:
     @staticmethod
     def get_ipfs_url(ipfs_hash: str) -> str:
         """Tạo URL IPFS từ hash"""
-        return f"{current_app.config['IPFS_GATEWAY']}{ipfs_hash}"
+        try:
+            gateway = current_app.config['IPFS_GATEWAY']
+        except RuntimeError:
+            # Default gateway when not in app context
+            gateway = 'https://gateway.pinata.cloud/ipfs/'
+        return f"{gateway}{ipfs_hash}"
 
 
 def get_pinata_client() -> PinataClient:

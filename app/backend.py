@@ -38,7 +38,7 @@ def create_app(config_name='default'):
     
     # Initialize components
     cardano_client = get_koios_client()
-    ipfs_client = get_pinata_client()
+    # IPFS client will be lazy-loaded when needed
     
     # Routes
     @app.route('/')
