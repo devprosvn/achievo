@@ -21,12 +21,18 @@ class Config:
     
     # Cardano configuration
     KOIOS_API_URL = os.getenv('KOIOS_API_URL', 'https://preprod.koios.rest/api/v1')
+    KOIOS_API_TOKEN = os.getenv('KOIOS_API_TOKEN')
     CARDANO_NETWORK = os.getenv('CARDANO_NETWORK', 'preprod')
     
     # IPFS configuration
     PINATA_API_KEY = os.getenv('PINATA_API_KEY')
     PINATA_SECRET_KEY = os.getenv('PINATA_SECRET_KEY')
-    IPFS_GATEWAY = os.getenv('IPFS_GATEWAY', 'https://ipfs.io/ipfs/')
+    PINATA_JWT = os.getenv('PINATA_JWT')
+    IPFS_GATEWAY = os.getenv('IPFS_GATEWAY', 'https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/')
+    
+    # Firebase configuration
+    FIREBASE_PROJECT_ID = os.getenv('FIREBASE_PROJECT_ID')
+    FIREBASE_AUTH_DOMAIN = os.getenv('FIREBASE_AUTH_DOMAIN')
     
     # Security configuration
     JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY', SECRET_KEY)

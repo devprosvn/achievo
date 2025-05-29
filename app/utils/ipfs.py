@@ -199,7 +199,9 @@ class IPFSUtils:
             gateway = current_app.config['IPFS_GATEWAY']
         except RuntimeError:
             # Default gateway when not in app context
-            gateway = 'https://gateway.pinata.cloud/ipfs/'
+            gateway = 'https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/'
+        
+        return f"{gateway}{ipfs_hash}"pfs/'
         return f"{gateway}{ipfs_hash}"
 
 

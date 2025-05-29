@@ -1,0 +1,47 @@
+
+services:
+  - type: web
+    name: achievo-app
+    env: python
+    region: singapore
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 main:app
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: FLASK_ENV
+        value: production
+      - key: FLASK_DEBUG
+        value: False
+      - key: SECRET_KEY
+        fromGroup: secrets
+      - key: FIREBASE_PROJECT_ID
+        value: achievo-devpros
+      - key: FIREBASE_AUTH_DOMAIN
+        value: achievo-devpros.firebaseapp.com
+      - key: FIREBASE_CREDENTIALS_PATH
+        value: /opt/render/project/src/firebase-credentials.json
+      - key: KOIOS_API_URL
+        value: https://preprod.koios.rest/api/v1
+      - key: KOIOS_API_TOKEN
+        fromGroup: secrets
+      - key: CARDANO_NETWORK
+        value: preprod
+      - key: PINATA_API_KEY
+        fromGroup: secrets
+      - key: PINATA_SECRET_KEY
+        fromGroup: secrets
+      - key: PINATA_JWT
+        fromGroup: secrets
+      - key: IPFS_GATEWAY
+        value: https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/
+      - key: JWT_SECRET_KEY
+        fromGroup: secrets
+      - key: JWT_ACCESS_TOKEN_EXPIRES
+        value: 3600
+      - key: RATE_LIMIT_STORAGE_URL
+        value: memory://
+      - key: LOG_LEVEL
+        value: WARNING
+    autoDeploy: false
