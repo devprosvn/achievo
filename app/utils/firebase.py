@@ -16,14 +16,39 @@ class FirebaseService:
     def __init__(self):
         if not firebase_admin._apps:
             # Initialize Firebase
-            service_account_path = os.path.join(os.path.dirname(__file__), '../../attached_assets/serviceAccountKey.json')
-            cred = credentials.Certificate(service_account_path)
-            firebase_admin.initialize_app(cred)
+            try:
+                # Try to use service account file first
+                service_account_path = os.path.join(os.path.dirname(__file__), '../../attached_assets/serviceAccountKey.json')
+                if os.path.exists(service_account_path):
+                    cred = credentials.Certificate(service_account_path)
+                else:
+                    # Use environment variables as fallback
+                    firebase_config = {
+                        "type": "service_account",
+                        "project_id": os.getenv('FIREBASE_PROJECT_ID'),
+                        "private_key_id": os.getenv('FIREBASE_PRIVATE_KEY_ID'),
+                        "private_key": os.getenv('FIREBASE_PRIVATE_KEY', '').replace('\\n', '\n'),
+                        "client_email": os.getenv('FIREBASE_CLIENT_EMAIL'),
+                        "client_id": os.getenv('FIREBASE_CLIENT_ID'),
+                        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                        "token_uri": "https://oauth2.googleapis.com/token",
+                        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+                        "client_x509_cert_url": os.getenv('FIREBASE_CLIENT_X509_CERT_URL')
+                    }
+                    cred = credentials.Certificate(firebase_config)
+                firebase_admin.initialize_app(cred)
+            except Exception as e:
+                print(f"Warning: Could not initialize Firebase: {e}")
+                # Create a mock object for development
+                self.db = None
+                return
         
-        self.db = firestore.client()
+        self.db = firestore.client() if firebase_admin._apps else None
     
     def create_user(self, user_data: Dict) -> str:
         """Tạo user mới trong Firestore"""
+        if not self.db:
+            raise Exception("Firebase not initialized")
         try:
             user_ref = self.db.collection('users').document()
             user_data.update({
@@ -59,6 +84,8 @@ class FirebaseService:
     
     def authenticate_user(self, email: str, password_hash: str) -> Optional[Dict]:
         """Xác thực user qua email và password"""
+        if not self.db:
+            return None
         try:
             users_ref = self.db.collection('users')
             query = users_ref.where('email', '==', email).where('password_hash', '==', password_hash).limit(1)
