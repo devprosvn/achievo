@@ -33,19 +33,19 @@ services:
       - key: KOIOS_API_URL
         value: https://preprod.koios.rest/api/v1
       - key: KOIOS_API_TOKEN
-        value: your_koios_token_here
+        value: 
       - key: CARDANO_NETWORK
         value: preprod
       - key: PINATA_API_KEY
-        value: your_pinata_api_key_here
+        value: 
       - key: PINATA_SECRET_KEY
-        value: your_pinata_secret_key_here
+        value: 
       - key: PINATA_JWT
-        value: your_pinata_jwt_here
+        value: 
       - key: IPFS_GATEWAY
         value: https://harlequin-impressed-guan-658.mypinata.cloud/ipfs/
       - key: JWT_SECRET_KEY
-        value: 9cf594e8adfc1960e62829609c486bf966f4600dce6d9b9b7a737b940495a1c4
+        value: 
       - key: JWT_ACCESS_TOKEN_EXPIRES
         value: 3600
       - key: RATE_LIMIT_STORAGE_URL
