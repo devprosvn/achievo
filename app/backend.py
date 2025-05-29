@@ -12,13 +12,13 @@ import os
 import json
 from typing import Dict, List, Optional
 
-from .config import config
-from .utils.auth import *
-from .utils.cardano import get_koios_client, CardanoUtils
-from .utils.ipfs import get_pinata_client, IPFSUtils
-from .utils.logging import AuditLogger, LogAction, LogLevel, configure_logging
-from .utils.firebase import firebase_service
-from .utils.marketplace import marketplace_service, reward_service
+from app.config import config
+from app.utils.auth import *
+from app.utils.cardano import get_koios_client, CardanoUtils
+from app.utils.ipfs import get_pinata_client, IPFSUtils
+from app.utils.logging import AuditLogger, LogAction, LogLevel, configure_logging
+from app.utils.firebase import firebase_service
+from app.utils.marketplace import marketplace_service, reward_service
 
 
 def create_app(config_name='default'):
