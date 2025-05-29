@@ -1,0 +1,65 @@
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Achievo - Nền tảng Chứng chỉ NFT{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <h1>Achievo</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="{{ url_for('index') }}">Trang chủ</a></li>
+                    {% if session.user_id %}
+                        <li><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        {% if session.user_type == 'admin' %}
+                            <li><a href="{{ url_for('admin') }}">Quản trị</a></li>
+                        {% endif %}
+                        <li><a href="{{ url_for('logout') }}">Đăng xuất</a></li>
+                    {% else %}
+                        <li><a href="{{ url_for('login') }}">Đăng nhập</a></li>
+                        <li><a href="{{ url_for('register') }}">Đăng ký</a></li>
+                    {% endif %}
+                    <li><a href="{{ url_for('verify_certificate') }}">Xác thực chứng chỉ</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ 'danger' if category == 'error' else category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <script>
+        // Basic JavaScript for enhanced UX
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-hide alerts after 5 seconds
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                setTimeout(() => {
+                    alert.style.opacity = '0';
+                    setTimeout(() => alert.remove(), 300);
+                }, 5000);
+            });
+        });
+    </script>
+</body>
+</html>

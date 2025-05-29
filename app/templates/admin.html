@@ -1,0 +1,91 @@
+
+{% extends "base.html" %}
+
+{% block title %}Quản trị hệ thống - Achievo{% endblock %}
+
+{% block content %}
+<div style="margin: 2rem 0;">
+    <h1>Quản trị hệ thống</h1>
+    
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>📊 Thống kê tổng quan</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div>
+                    <p><strong>Tổng người dùng:</strong> {{ stats.total_users }}</p>
+                    <p><strong>Học viên:</strong> {{ stats.learners }}</p>
+                    <p><strong>Tổ chức:</strong> {{ stats.educators }}</p>
+                </div>
+                <div>
+                    <p><strong>Chứng chỉ:</strong> {{ stats.certificates }}</p>
+                    <p><strong>Giao dịch:</strong> {{ stats.transactions }}</p>
+                    <p><strong>NFT phần thưởng:</strong> {{ stats.rewards }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>⏳ Tổ chức chờ phê duyệt</h3>
+            {% for org in pending_organizations %}
+                <div style="border: 1px solid #ddd; padding: 1rem; margin: 0.5rem 0; border-radius: 5px;">
+                    <h4>{{ org.name }}</h4>
+                    <p>Loại: {{ org.organization_type }}</p>
+                    <p>Email: {{ org.email }}</p>
+                    <div style="margin-top: 1rem;">
+                        <form method="POST" style="display: inline;">
+                            <input type="hidden" name="action" value="approve">
+                            <input type="hidden" name="org_id" value="{{ org.id }}">
+                            <button type="submit" class="btn btn-success">Phê duyệt</button>
+                        </form>
+                        <form method="POST" style="display: inline; margin-left: 0.5rem;">
+                            <input type="hidden" name="action" value="reject">
+                            <input type="hidden" name="org_id" value="{{ org.id }}">
+                            <button type="submit" class="btn btn-danger">Từ chối</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>🔧 Công cụ quản trị</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{{ url_for('admin_users') }}" class="btn btn-primary">Quản lý người dùng</a>
+                <a href="{{ url_for('admin_certificates') }}" class="btn btn-primary">Quản lý chứng chỉ</a>
+                <a href="{{ url_for('admin_transactions') }}" class="btn btn-primary">Quản lý giao dịch</a>
+                <a href="{{ url_for('admin_logs') }}" class="btn btn-primary">Xem log hệ thống</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Báo cáo và xuất dữ liệu</h3>
+            <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <a href="{{ url_for('export_users') }}" class="btn btn-success">Xuất danh sách người dùng</a>
+                <a href="{{ url_for('export_certificates') }}" class="btn btn-success">Xuất danh sách chứng chỉ</a>
+                <a href="{{ url_for('export_logs') }}" class="btn btn-success">Xuất log hệ thống</a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="card">
+        <h3>📋 Log hoạt động gần đây</h3>
+        <div style="max-height: 400px; overflow-y: auto;">
+            {% for log in recent_logs %}
+                <div style="padding: 0.5rem; border-bottom: 1px solid #eee; font-family: monospace; font-size: 0.9rem;">
+                    <span style="color: #666;">[{{ log.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}]</span>
+                    <span style="color: 
+                        {% if log.level == 'ERROR' %}#e74c3c
+                        {% elif log.level == 'WARNING' %}#f39c12
+                        {% elif log.level == 'INFO' %}#3498db
+                        {% else %}#2ecc71{% endif %};">
+                        {{ log.level }}
+                    </span>
+                    {{ log.message }}
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

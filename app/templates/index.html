@@ -1,0 +1,55 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+<div class="hero-section" style="text-align: center; padding: 4rem 0; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; margin: -20px -20px 2rem -20px;">
+    <div class="container">
+        <h1 style="font-size: 3rem; margin-bottom: 1rem;">Achievo</h1>
+        <p style="font-size: 1.5rem; margin-bottom: 2rem;">Nền tảng chứng chỉ NFT trên Cardano</p>
+        <a href="{{ url_for('register') }}" class="btn btn-primary" style="font-size: 1.2rem; padding: 1rem 2rem;">Bắt đầu ngay</a>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="dashboard-grid">
+        <div class="card">
+            <h3>🎓 Chứng chỉ NFT</h3>
+            <p>Phát hành và quản lý chứng chỉ dưới dạng NFT trên blockchain Cardano với tính bảo mật và minh bạch cao.</p>
+        </div>
+        
+        <div class="card">
+            <h3>🏆 Hệ thống phần thưởng</h3>
+            <p>Nhận phần thưởng NFT tự động khi hoàn thành các milestone học tập, tạo động lực học tập bền vững.</p>
+        </div>
+        
+        <div class="card">
+            <h3>🛒 Marketplace</h3>
+            <p>Mua bán khóa học và dịch vụ giáo dục bằng Cardano token trong một môi trường an toàn và minh bạch.</p>
+        </div>
+        
+        <div class="card">
+            <h3>✅ Xác thực công khai</h3>
+            <p>Xác minh tính hợp lệ của chứng chỉ một cách nhanh chóng và minh bạch thông qua blockchain.</p>
+        </div>
+    </div>
+</div>
+
+<div class="stats-section" style="background: #f8f9fa; padding: 3rem 0; margin: 2rem -20px -20px -20px;">
+    <div class="container">
+        <div class="dashboard-grid">
+            <div style="text-align: center;">
+                <h2 style="color: #3498db;">1,000+</h2>
+                <p>Chứng chỉ đã phát hành</p>
+            </div>
+            <div style="text-align: center;">
+                <h2 style="color: #2ecc71;">500+</h2>
+                <p>Học viên đã tham gia</p>
+            </div>
+            <div style="text-align: center;">
+                <h2 style="color: #e74c3c;">50+</h2>
+                <p>Tổ chức đối tác</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

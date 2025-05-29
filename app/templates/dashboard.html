@@ -1,0 +1,115 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Achievo{% endblock %}
+
+{% block content %}
+<div style="margin: 2rem 0;">
+    <h1>Chào mừng, {{ session.user_name }}!</h1>
+    
+    {% if session.user_type == 'learner' %}
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>📚 Tiến trình học tập</h3>
+                <div style="background: #e9ecef; height: 20px; border-radius: 10px; margin: 1rem 0;">
+                    <div style="background: #28a745; height: 100%; width: {{ progress }}%; border-radius: 10px;"></div>
+                </div>
+                <p>Hoàn thành: {{ progress }}%</p>
+            </div>
+            
+            <div class="card">
+                <h3>🏆 Chứng chỉ NFT</h3>
+                <p>Số chứng chỉ đã nhận: <strong>{{ certificates_count }}</strong></p>
+                <a href="{{ url_for('my_certificates') }}" class="btn btn-primary">Xem chứng chỉ</a>
+            </div>
+            
+            <div class="card">
+                <h3>🎁 Phần thưởng</h3>
+                <p>NFT phần thưởng: <strong>{{ rewards_count }}</strong></p>
+                <a href="{{ url_for('my_rewards') }}" class="btn btn-success">Xem phần thưởng</a>
+            </div>
+            
+            <div class="card">
+                <h3>🛒 Marketplace</h3>
+                <p>Khám phá các khóa học và dịch vụ mới</p>
+                <a href="{{ url_for('marketplace') }}" class="btn btn-primary">Vào Marketplace</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>📊 Hoạt động gần đây</h3>
+            <div id="recent-activities">
+                {% for activity in recent_activities %}
+                    <div style="padding: 0.5rem 0; border-bottom: 1px solid #eee;">
+                        <strong>{{ activity.type }}</strong> - {{ activity.description }}
+                        <span style="float: right; color: #666;">{{ activity.created_at.strftime('%d/%m/%Y %H:%M') }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        
+    {% elif session.user_type == 'educator' %}
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>👥 Học viên</h3>
+                <p>Tổng số học viên: <strong>{{ students_count }}</strong></p>
+                <a href="{{ url_for('manage_students') }}" class="btn btn-primary">Quản lý học viên</a>
+            </div>
+            
+            <div class="card">
+                <h3>📖 Khóa học</h3>
+                <p>Số khóa học: <strong>{{ courses_count }}</strong></p>
+                <a href="{{ url_for('manage_courses') }}" class="btn btn-primary">Quản lý khóa học</a>
+            </div>
+            
+            <div class="card">
+                <h3>🎓 Chứng chỉ đã phát hành</h3>
+                <p>Tổng số: <strong>{{ issued_certificates }}</strong></p>
+                <a href="{{ url_for('issue_certificate') }}" class="btn btn-success">Phát hành chứng chỉ</a>
+            </div>
+            
+            <div class="card">
+                <h3>📊 Báo cáo</h3>
+                <p>Xem thống kê và báo cáo chi tiết</p>
+                <a href="{{ url_for('reports') }}" class="btn btn-primary">Xem báo cáo</a>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h3>⚡ Thao tác nhanh</h3>
+            <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                <a href="{{ url_for('issue_certificate') }}" class="btn btn-success">Phát hành chứng chỉ mới</a>
+                <a href="{{ url_for('create_course') }}" class="btn btn-primary">Tạo khóa học</a>
+                <a href="{{ url_for('upload_students') }}" class="btn btn-primary">Import học viên</a>
+            </div>
+        </div>
+        
+    {% elif session.user_type == 'admin' %}
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>👤 Người dùng</h3>
+                <p>Tổng số: <strong>{{ total_users }}</strong></p>
+                <a href="{{ url_for('admin_users') }}" class="btn btn-primary">Quản lý người dùng</a>
+            </div>
+            
+            <div class="card">
+                <h3>🏢 Tổ chức</h3>
+                <p>Chờ phê duyệt: <strong>{{ pending_organizations }}</strong></p>
+                <a href="{{ url_for('admin_organizations') }}" class="btn btn-danger">Phê duyệt tổ chức</a>
+            </div>
+            
+            <div class="card">
+                <h3>🎓 Chứng chỉ</h3>
+                <p>Tổng số: <strong>{{ total_certificates }}</strong></p>
+                <a href="{{ url_for('admin_certificates') }}" class="btn btn-primary">Quản lý chứng chỉ</a>
+            </div>
+            
+            <div class="card">
+                <h3>📋 Log hệ thống</h3>
+                <p>Kiểm toán và log hoạt động</p>
+                <a href="{{ url_for('admin_logs') }}" class="btn btn-primary">Xem log</a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

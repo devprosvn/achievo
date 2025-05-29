@@ -1,0 +1,85 @@
+
+{% extends "base.html" %}
+
+{% block title %}Đăng ký - Achievo{% endblock %}
+
+{% block content %}
+<div style="max-width: 500px; margin: 2rem auto;">
+    <div class="card">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Đăng ký tài khoản</h2>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="user_type">Loại tài khoản:</label>
+                <select id="user_type" name="user_type" class="form-control" required>
+                    <option value="">Chọn loại tài khoản</option>
+                    <option value="learner">Học viên</option>
+                    <option value="educator">Tổ chức giáo dục</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="full_name">Họ và tên / Tên tổ chức:</label>
+                <input type="text" id="full_name" name="full_name" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">Số điện thoại:</label>
+                <input type="tel" id="phone" name="phone" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Mật khẩu:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="confirm_password">Xác nhận mật khẩu:</label>
+                <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+            </div>
+            
+            <div id="educator_fields" style="display: none;">
+                <div class="form-group">
+                    <label for="organization_type">Loại tổ chức:</label>
+                    <select id="organization_type" name="organization_type" class="form-control">
+                        <option value="">Chọn loại tổ chức</option>
+                        <option value="university">Trường đại học</option>
+                        <option value="training_center">Trung tâm đào tạo</option>
+                        <option value="company">Doanh nghiệp</option>
+                        <option value="other">Khác</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="license_number">Số giấy phép hoạt động:</label>
+                    <input type="text" id="license_number" name="license_number" class="form-control">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Đăng ký</button>
+        </form>
+        
+        <div style="text-align: center; margin-top: 1rem;">
+            <p>Đã có tài khoản? <a href="{{ url_for('login') }}">Đăng nhập ngay</a></p>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('user_type').addEventListener('change', function() {
+    const educatorFields = document.getElementById('educator_fields');
+    if (this.value === 'educator') {
+        educatorFields.style.display = 'block';
+        document.getElementById('organization_type').required = true;
+    } else {
+        educatorFields.style.display = 'none';
+        document.getElementById('organization_type').required = false;
+    }
+});
+</script>
+{% endblock %}

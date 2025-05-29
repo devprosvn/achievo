@@ -1,0 +1,98 @@
+
+{% extends "base.html" %}
+
+{% block title %}Xác thực chứng chỉ - Achievo{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 2rem auto;">
+    <div class="card">
+        <h2 style="text-align: center; margin-bottom: 2rem;">Xác thực chứng chỉ NFT</h2>
+        
+        <form method="POST">
+            <div class="form-group">
+                <label for="certificate_id">Mã chứng chỉ hoặc Transaction Hash:</label>
+                <input type="text" id="certificate_id" name="certificate_id" class="form-control" 
+                       placeholder="Nhập mã chứng chỉ hoặc transaction hash" required>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Xác thực</button>
+        </form>
+        
+        {% if certificate %}
+            <div style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+                <h3 style="color: #28a745; margin-bottom: 1rem;">✅ Chứng chỉ hợp lệ</h3>
+                
+                <div style="display: grid; gap: 1rem;">
+                    <div>
+                        <strong>Tên chứng chỉ:</strong> {{ certificate.name }}
+                    </div>
+                    <div>
+                        <strong>Người nhận:</strong> {{ certificate.recipient_name }}
+                    </div>
+                    <div>
+                        <strong>Tổ chức phát hành:</strong> {{ certificate.issuer_name }}
+                    </div>
+                    <div>
+                        <strong>Ngày phát hành:</strong> {{ certificate.issued_date.strftime('%d/%m/%Y') }}
+                    </div>
+                    <div>
+                        <strong>Trạng thái:</strong> 
+                        <span style="color: 
+                            {% if certificate.status == 'active' %}#28a745
+                            {% elif certificate.status == 'revoked' %}#dc3545
+                            {% else %}#ffc107{% endif %};">
+                            {{ certificate.status_display }}
+                        </span>
+                    </div>
+                    {% if certificate.description %}
+                    <div>
+                        <strong>Mô tả:</strong> {{ certificate.description }}
+                    </div>
+                    {% endif %}
+                    <div>
+                        <strong>Transaction Hash:</strong> 
+                        <code style="word-break: break-all;">{{ certificate.tx_hash }}</code>
+                    </div>
+                    {% if certificate.ipfs_hash %}
+                    <div>
+                        <strong>Metadata IPFS:</strong> 
+                        <a href="https://ipfs.io/ipfs/{{ certificate.ipfs_hash }}" target="_blank">
+                            Xem metadata
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                {% if certificate.verification_history %}
+                <div style="margin-top: 2rem;">
+                    <h4>Lịch sử xác thực:</h4>
+                    <div style="max-height: 200px; overflow-y: auto;">
+                        {% for verification in certificate.verification_history %}
+                            <div style="padding: 0.5rem; border-bottom: 1px solid #dee2e6; font-size: 0.9rem;">
+                                {{ verification.timestamp.strftime('%d/%m/%Y %H:%M') }} - {{ verification.action }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        {% endif %}
+        
+        {% if error %}
+            <div style="margin-top: 2rem; padding: 1.5rem; background: #f8d7da; color: #721c24; border-radius: 8px;">
+                <h3>❌ {{ error }}</h3>
+            </div>
+        {% endif %}
+    </div>
+    
+    <div class="card">
+        <h3>ℹ️ Hướng dẫn xác thực</h3>
+        <ul>
+            <li>Nhập mã chứng chỉ được cung cấp khi nhận chứng chỉ</li>
+            <li>Hoặc nhập transaction hash trên blockchain Cardano</li>
+            <li>Hệ thống sẽ kiểm tra tính hợp lệ và trạng thái hiện tại của chứng chỉ</li>
+            <li>Thông tin xác thực được cập nhật realtime từ blockchain</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
