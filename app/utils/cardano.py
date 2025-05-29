@@ -152,4 +152,3 @@ class CardanoUtils:
 def get_koios_client() -> KoiosClient:
     """Factory function để tạo Koios client"""
     return KoiosClient()
-```
