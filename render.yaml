@@ -20,8 +20,16 @@ services:
         value: achievo-devpros
       - key: FIREBASE_AUTH_DOMAIN
         value: achievo-devpros.firebaseapp.com
-      - key: FIREBASE_CREDENTIALS_PATH
-        value: /opt/render/project/src/firebase-credentials.json
+      - key: FIREBASE_PRIVATE_KEY_ID
+        fromGroup: secrets
+      - key: FIREBASE_PRIVATE_KEY
+        fromGroup: secrets
+      - key: FIREBASE_CLIENT_EMAIL
+        fromGroup: secrets
+      - key: FIREBASE_CLIENT_ID
+        fromGroup: secrets
+      - key: FIREBASE_CLIENT_X509_CERT_URL
+        fromGroup: secrets
       - key: KOIOS_API_URL
         value: https://preprod.koios.rest/api/v1
       - key: KOIOS_API_TOKEN
