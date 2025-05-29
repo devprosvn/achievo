@@ -37,37 +37,212 @@
 </div>
 
 <script>
-async function connectCardanoWallet() {
-    try {
-        if (!window.cardano) {
-            alert('Vui lòng cài đặt Cardano wallet (Nami, Eternl, Flint)');
-            return;
-        }
-        
-        const api = await window.cardano.nami.enable();
-        const addresses = await api.getUsedAddresses();
-        
-        if (addresses.length > 0) {
-            // Send wallet address to backend for authentication
-            const response = await fetch('/auth/wallet', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    address: addresses[0]
-                })
-            });
-            
-            if (response.ok) {
-                window.location.href = '/dashboard';
-            } else {
-                alert('Xác thực wallet thất bại');
+// CIP-30 compliant Cardano Wallet Connector
+class CardanoWalletConnector {
+    constructor() {
+        this.supportedWallets = ['nami', 'eternl', 'flint', 'typhoncip30', 'nufi', 'gero'];
+        this.connectedWallet = null;
+        this.api = null;
+    }
+
+    // Detect available wallets
+    getAvailableWallets() {
+        const available = [];
+        this.supportedWallets.forEach(wallet => {
+            if (window.cardano && window.cardano[wallet]) {
+                available.push({
+                    name: wallet,
+                    displayName: this.getWalletDisplayName(wallet),
+                    icon: window.cardano[wallet].icon,
+                    isEnabled: window.cardano[wallet].isEnabled
+                });
             }
+        });
+        return available;
+    }
+
+    getWalletDisplayName(wallet) {
+        const names = {
+            'nami': 'Nami',
+            'eternl': 'Eternl',
+            'flint': 'Flint',
+            'typhoncip30': 'Typhon',
+            'nufi': 'NuFi',
+            'gero': 'GeroWallet'
+        };
+        return names[wallet] || wallet;
+    }
+
+    // Connect to specific wallet
+    async connectWallet(walletName) {
+        try {
+            if (!window.cardano || !window.cardano[walletName]) {
+                throw new Error(`Wallet ${walletName} not found`);
+            }
+
+            const wallet = window.cardano[walletName];
+            
+            // Check if wallet supports CIP-30
+            if (!wallet.enable) {
+                throw new Error(`Wallet ${walletName} does not support CIP-30`);
+            }
+
+            // Enable wallet
+            this.api = await wallet.enable();
+            this.connectedWallet = walletName;
+
+            // Get wallet info
+            const networkId = await this.api.getNetworkId();
+            const changeAddress = await this.api.getChangeAddress();
+            const usedAddresses = await this.api.getUsedAddresses();
+            const unusedAddresses = await this.api.getUnusedAddresses();
+
+            // Use change address as primary
+            const primaryAddress = changeAddress || (usedAddresses.length > 0 ? usedAddresses[0] : unusedAddresses[0]);
+
+            if (!primaryAddress) {
+                throw new Error('No addresses found in wallet');
+            }
+
+            return {
+                walletName,
+                networkId,
+                address: primaryAddress,
+                usedAddresses: usedAddresses.length,
+                balance: await this.getBalance()
+            };
+
+        } catch (error) {
+            console.error('Wallet connection error:', error);
+            throw error;
         }
+    }
+
+    // Get wallet balance
+    async getBalance() {
+        if (!this.api) return null;
+        
+        try {
+            const balance = await this.api.getBalance();
+            return balance;
+        } catch (error) {
+            console.error('Error getting balance:', error);
+            return null;
+        }
+    }
+
+    // Sign data (for authentication)
+    async signData(address, payload) {
+        if (!this.api) throw new Error('Wallet not connected');
+        
+        try {
+            const signature = await this.api.signData(address, payload);
+            return signature;
+        } catch (error) {
+            console.error('Error signing data:', error);
+            throw error;
+        }
+    }
+
+    // Disconnect wallet
+    disconnect() {
+        this.api = null;
+        this.connectedWallet = null;
+    }
+}
+
+const walletConnector = new CardanoWalletConnector();
+
+// Show wallet selection modal
+function showWalletSelection() {
+    const availableWallets = walletConnector.getAvailableWallets();
+    
+    if (availableWallets.length === 0) {
+        alert('Không tìm thấy Cardano wallet nào. Vui lòng cài đặt Nami, Eternl, Flint hoặc wallet khác hỗ trợ CIP-30.');
+        window.open('https://namiwallet.io', '_blank');
+        return;
+    }
+
+    // Create modal HTML
+    const modalHtml = `
+        <div class="wallet-modal" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center;">
+            <div class="wallet-modal-content" style="background: white; border-radius: 8px; padding: 20px; max-width: 400px; width: 90%;">
+                <h3 style="margin-top: 0;">Chọn Cardano Wallet</h3>
+                <div class="wallet-list">
+                    ${availableWallets.map(wallet => `
+                        <button onclick="connectToWallet('${wallet.name}')" 
+                                style="width: 100%; margin: 5px 0; padding: 12px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; display: flex; align-items: center;">
+                            ${wallet.icon ? `<img src="${wallet.icon}" style="width: 24px; height: 24px; margin-right: 10px;">` : ''}
+                            <span>${wallet.displayName}</span>
+                            ${wallet.isEnabled ? '<span style="color: green; margin-left: auto;">●</span>' : ''}
+                        </button>
+                    `).join('')}
+                </div>
+                <button onclick="closeWalletModal()" style="width: 100%; margin-top: 15px; padding: 10px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                    Hủy
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+}
+
+// Connect to specific wallet
+async function connectToWallet(walletName) {
+    closeWalletModal();
+    
+    try {
+        const walletInfo = await walletConnector.connectWallet(walletName);
+        
+        // Create authentication message
+        const authMessage = `Achievo Authentication\nTimestamp: ${Date.now()}\nAddress: ${walletInfo.address}`;
+        
+        // Sign the message for authentication
+        const signature = await walletConnector.signData(walletInfo.address, authMessage);
+        
+        // Send to backend for verification
+        const response = await fetch('/auth/wallet', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                walletName,
+                address: walletInfo.address,
+                networkId: walletInfo.networkId,
+                signature: signature,
+                message: authMessage,
+                balance: walletInfo.balance
+            })
+        });
+
+        const result = await response.json();
+        
+        if (response.ok && result.success) {
+            window.location.href = '/dashboard';
+        } else {
+            alert('Xác thực wallet thất bại: ' + (result.error || 'Unknown error'));
+        }
+
     } catch (error) {
         console.error('Wallet connection error:', error);
-        alert('Kết nối wallet thất bại');
+        alert('Lỗi kết nối wallet: ' + error.message);
+    }
+}
+
+// Close wallet modal
+function closeWalletModal() {
+    const modal = document.querySelector('.wallet-modal');
+    if (modal) {
+        modal.remove();
+    }
+}
+
+// Main function called by button
+async function connectCardanoWallet() {
+    showWalletSelection();
+}t thất bại');
     }
 }
 </script>

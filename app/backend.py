@@ -17,6 +17,8 @@ from utils.auth import *
 from utils.cardano import get_koios_client, CardanoUtils
 from utils.ipfs import get_pinata_client, IPFSUtils
 from utils.logging import AuditLogger, LogAction, LogLevel, configure_logging
+from utils.firebase import firebase_service
+from utils.marketplace import marketplace_service, reward_service
 
 
 def create_app(config_name='default'):
@@ -52,15 +54,17 @@ def create_app(config_name='default'):
             email = request.form.get('email')
             password = request.form.get('password')
             
-            # TODO: Kiểm tra thông tin đăng nhập từ database
-            # user = UserService.authenticate(email, password)
-            
-            # Mock authentication
             if email and password:
-                session['user_id'] = 'user_123'
-                session['user_name'] = 'User Test'
-                session['user_type'] = 'learner'
-                session['email'] = email
+                try:
+                    # Hash password for authentication
+                    password_hash = hash_password(password)
+                    user = firebase_service.authenticate_user(email, password_hash)
+                    
+                    if user:
+                        session['user_id'] = user['id']
+                        session['user_name'] = user.get('full_name', 'User')
+                        session['user_type'] = user.get('user_type', 'learner')
+                        session['email'] = email
                 
                 AuditLogger.log_action(
                     LogAction.USER_LOGIN,
@@ -85,12 +89,20 @@ def create_app(config_name='default'):
             phone = request.form.get('phone')
             password = request.form.get('password')
             
-            # TODO: Validation và lưu vào database
-            # user_id = UserService.create_user(...)
-            
-            # Mock registration
             if all([user_type, full_name, email, password]):
-                user_id = f"user_{datetime.utcnow().timestamp()}"
+                try:
+                    # Hash password
+                    password_hash = hash_password(password)
+                    
+                    user_data = {
+                        'user_type': user_type,
+                        'full_name': full_name,
+                        'email': email,
+                        'phone': phone,
+                        'password_hash': password_hash
+                    }
+                    
+                    user_id = firebase_service.create_user(user_data)
                 
                 AuditLogger.log_action(
                     LogAction.USER_REGISTER,
@@ -381,11 +393,26 @@ def create_app(config_name='default'):
             app.logger.error(f"Error authenticating wallet: {e}")
             return jsonify({'error': 'Authentication failed'}), 500
     
-    # Placeholder routes for development
     @app.route('/marketplace')
-    @login_required
     def marketplace():
-        return "<h1>Marketplace</h1><p>Coming soon...</p>"
+        """Marketplace page"""
+        try:
+            category = request.args.get('category')
+            search = request.args.get('search')
+            
+            courses = marketplace_service.get_marketplace_listings(category, search)
+            
+            categories = ['programming', 'data-science', 'blockchain', 'design', 'business']
+            
+            return render_template('marketplace.html', 
+                                 courses=courses, 
+                                 categories=categories,
+                                 selected_category=category,
+                                 search_term=search)
+        except Exception as e:
+            app.logger.error(f"Error loading marketplace: {e}")
+            flash('Lỗi tải marketplace', 'error')
+            return redirect(url_for('index'))
     
     @app.route('/my-certificates')
     @login_required

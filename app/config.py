@@ -53,6 +53,21 @@ class DevelopmentConfig(Config):
 class ProductionConfig(Config):
     """Cấu hình cho môi trường production"""
     DEBUG = False
+    
+    # Production security settings
+    SESSION_COOKIE_SECURE = True
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    
+    # Rate limiting for production
+    RATE_LIMIT_STORAGE_URL = os.getenv('REDIS_URL', 'memory://')
+    
+    # Enhanced logging
+    LOG_LEVEL = 'WARNING'
+    
+    # Production Cardano network
+    CARDANO_NETWORK = os.getenv('CARDANO_NETWORK', 'mainnet')
+    KOIOS_API_URL = os.getenv('KOIOS_API_URL', 'https://api.koios.rest/api/v1')
 
 
 config = {
