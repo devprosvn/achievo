@@ -9,3 +9,4 @@ pyjwt
 werkzeug
 loguru
 python-dateutil
+gunicorn
