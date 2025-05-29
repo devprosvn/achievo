@@ -10,3 +10,4 @@ werkzeug
 loguru
 python-dateutil
 gunicorn
+pynacl
