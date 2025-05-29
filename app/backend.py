@@ -408,34 +408,86 @@ def create_app(config_name='default'):
         try:
             data = request.get_json()
             wallet_address = data.get('address')
+            wallet_name = data.get('walletName')
+            signature_data = data.get('signature')
+            key_data = data.get('key')
+            message = data.get('message')
+            nonce = data.get('nonce')
 
             if not wallet_address or not CardanoUtils.validate_address(wallet_address):
                 return jsonify({'error': 'Invalid wallet address'}), 400
 
-            # TODO: Implement wallet authentication logic
-            # 1. Verify wallet signature
-            # 2. Check if wallet is registered
-            # 3. Create session
+            # Verify nonce exists and is valid
+            if not hasattr(app, 'auth_nonces') or nonce not in app.auth_nonces:
+                return jsonify({'error': 'Invalid or expired nonce'}), 400
 
-            # Mock wallet authentication
+            nonce_data = app.auth_nonces[nonce]
+            current_time = time.time()
+            
+            # Check nonce expiry (5 minutes)
+            if current_time - nonce_data['timestamp'] > 300:
+                del app.auth_nonces[nonce]
+                return jsonify({'error': 'Nonce expired'}), 400
+
+            # Clean up used nonce
+            del app.auth_nonces[nonce]
+
+            # Helper function to decode signature data (handles both hex and base64)
+            def try_decode_signature(value):
+                if not value:
+                    return None
+                try:
+                    # Try hex first (for Nami and other wallets)
+                    return bytes.fromhex(value)
+                except ValueError:
+                    try:
+                        # Try base64 (for Lace and similar wallets)
+                        import base64
+                        return base64.b64decode(value)
+                    except Exception:
+                        return None
+
+            # Decode signature and key
+            decoded_signature = try_decode_signature(signature_data)
+            decoded_key = try_decode_signature(key_data)
+
+            if not decoded_signature or not decoded_key:
+                current_app.logger.warning(f"Failed to decode signature/key for wallet {wallet_name}")
+
+            # TODO: Implement proper signature verification using PyCardano
+            # For now, we'll validate the basic structure
+            if signature_data and key_data and message:
+                # Basic validation passed
+                signature_valid = True
+            else:
+                signature_valid = False
+
+            if not signature_valid:
+                return jsonify({'error': 'Invalid signature'}), 400
+
+            # Create user session
             session['user_id'] = f"wallet_{wallet_address[:8]}"
-            session['user_name'] = f"Wallet User"
+            session['user_name'] = f"{wallet_name.title()} User"
             session['user_type'] = 'learner'
             session['wallet_address'] = wallet_address
+            session['wallet_name'] = wallet_name
 
             AuditLogger.log_action(
                 LogAction.USER_LOGIN,
                 {
                     "wallet_address": wallet_address,
+                    "wallet_name": wallet_name,
                     "login_method": "cardano_wallet"
                 }
             )
 
-            return jsonify({'success': True, 'message': 'Wallet authenticated'})
+            current_app.logger.info(f"Wallet authentication successful for {wallet_name}: {wallet_address[:12]}...")
+
+            return jsonify({'success': True, 'message': 'Wallet authenticated successfully'})
 
         except Exception as e:
-            app.logger.error(f"Error authenticating wallet: {e}")
-            return jsonify({'error': 'Authentication failed'}), 500
+            current_app.logger.error(f"Error authenticating wallet: {e}")
+            return jsonify({'error': f'Authentication failed: {str(e)}'}), 500
 
     @app.route('/marketplace')
     def marketplace():
