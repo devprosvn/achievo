@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ACHIEVO INFORMATION (PYTHON STACK VERSION)
 ==========================================
 
@@ -371,4 +370,3 @@ achievo/
 =======
 # achievo
 Achievo - Web3 E-learning platform, developed by DevPros
->>>>>>> f56eff955c0e791197c92eff0b76f43e8d8a011f
